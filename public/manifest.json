@@ -2,6 +2,7 @@
   "name": "Corre, Prof!",
   "short_name": "CorreProf",
   "description": "Um divertido jogo de sobrevivência estilo Survivor.io sobre o cotidiano satírico e caótico dos professores brasileiros.",
+  "id": "corre-prof-game",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -27,6 +28,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Marcos correndo dos alunos no corredor"
+    },
+    {
+      "src": "screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Jogabilidade na sala de aula"
     }
   ]
 }

@@ -1,10 +1,12 @@
-const CACHE_NAME = 'corre-prof-v4';
+const CACHE_NAME = 'corre-prof-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './icon.png',
   './icon-192.png',
   './icon-512.png',
+  './screenshot-mobile.png',
+  './screenshot-desktop.png',
   './manifest.json'
 ];
 
@@ -36,13 +38,35 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch Event with Cache-First strategy for static assets, network fallback
+// Fetch Event
 self.addEventListener('fetch', (event) => {
   // Only handle GET requests and local requests
   if (event.request.method !== 'GET' || !event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
+  // Network-First for manifest.json and the service worker to ensure quick updates
+  if (event.request.url.includes('manifest.json') || event.request.url.includes('sw.js')) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseToCache = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
+            return networkResponse;
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Cache-First for other assets
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
