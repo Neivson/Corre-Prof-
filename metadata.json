@@ -1,0 +1,8 @@
+{
+  "name": "Corre, Prof!",
+  "description": "Um divertido jogo de sobrevivência estilo Survivor.io sobre o cotidiano satírico e caótico dos professores brasileiros.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
