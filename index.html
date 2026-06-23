@@ -12,7 +12,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     
     <!-- PWA Icons & Manifest -->
-    <link rel="apple-touch-icon" href="./icon.jpg" />
+    <link rel="apple-touch-icon" href="./icon-192.png" />
     <link rel="manifest" href="./manifest.json" />
   </head>
   <body>
@@ -23,7 +23,12 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js', { scope: './' })
+          // Dynamically detect correct subfolder path for GitHub Pages or root
+          const basePath = window.location.pathname.endsWith('/') 
+            ? window.location.pathname 
+            : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+
+          navigator.serviceWorker.register(basePath + 'sw.js', { scope: basePath })
             .then((reg) => {
               console.log('PWA Service Worker registered successfully with scope:', reg.scope);
             })
