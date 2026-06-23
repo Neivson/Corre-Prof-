@@ -4,6 +4,9 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { App as CapacitorApp } from '@capacitor/app';
+import { StatusBar } from '@capacitor/status-bar';
 import { 
   Coins, 
   Volume2, 
@@ -153,6 +156,17 @@ export default function App() {
 
   // Load from local storage
   useEffect(() => {
+    // Hide status bar on native mobile
+    if (Capacitor.isNativePlatform()) {
+      try {
+        StatusBar.hide().catch((err) => {
+          console.warn('StatusBar.hide failed:', err);
+        });
+      } catch (err) {
+        console.warn('StatusBar.hide not supported or failed synchronously:', err);
+      }
+    }
+
     try {
       const storedGold = localStorage.getItem('correprof_gold_v2');
       if (storedGold) setGold(parseInt(storedGold, 10));
@@ -184,6 +198,39 @@ export default function App() {
       console.error("Erro ao ler dados de progresso local do professor.", e);
     }
   }, []);
+
+  // Capacitor Android Back Button handler
+  useEffect(() => {
+    let backListener: any = null;
+
+    const setupListener = async () => {
+      if (!Capacitor.isNativePlatform()) return;
+      try {
+        backListener = await CapacitorApp.addListener('backButton', () => {
+          if (screen === 'playing') {
+            // Send event to game engine to trigger pause menu
+            window.dispatchEvent(new CustomEvent('android-back-button'));
+          } else if (screen === 'char_select') {
+            setScreen('menu');
+          } else if (screen === 'results') {
+            setScreen('menu');
+          } else {
+            console.log('Android Back Button pressed in Menu/Splash. Ignored to avoid closure.');
+          }
+        });
+      } catch (err) {
+        console.warn('Capacitor App backButton listener not supported on this platform:', err);
+      }
+    };
+
+    setupListener();
+
+    return () => {
+      if (backListener) {
+        backListener.remove();
+      }
+    };
+  }, [screen]);
 
   // Sync state changes to storage
   const saveProgress = (newGold: number, newUpgrades: PermanentShopUpgrades, newAchievements: Achievement[]) => {
@@ -392,8 +439,8 @@ export default function App() {
   };
 
   return (
-    <div id="full-screen-wrapper" className="w-full h-screen h-[100dvh] bg-[#E5E7EB] flex justify-center items-center p-0 sm:p-4 antialiased overflow-hidden">
-      <div className="w-full max-w-md h-full sm:h-[92vh] sm:max-h-[820px] bg-slate-900 brutalist-border brutalist-shadow-super flex flex-col justify-start relative overflow-hidden sm:rounded-2xl">
+    <div id="full-screen-wrapper" className="w-screen h-screen h-[100dvh] bg-slate-950 flex justify-center items-center p-0 sm:p-4 antialiased overflow-hidden">
+      <div className="w-full max-w-md h-full sm:h-[92vh] sm:max-h-[820px] bg-slate-900 border-0 sm:brutalist-border shadow-none sm:brutalist-shadow-super flex flex-col justify-start relative overflow-hidden rounded-none sm:rounded-2xl">
         
         {/* VIEW 0: SPLASH SCREEN */}
         {screen === 'splash' && (

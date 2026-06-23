@@ -1780,6 +1780,19 @@ export default function ActiveGame({
     quote: string;
   } | null>(null);
 
+  // Handle Android Back Button event to Pause gameplay
+  useEffect(() => {
+    const handleAndroidBack = () => {
+      if (!isPaused && !isLevelUpPause && !bossAnnouncement) {
+        setIsPaused(true);
+      }
+    };
+    window.addEventListener('android-back-button', handleAndroidBack);
+    return () => {
+      window.removeEventListener('android-back-button', handleAndroidBack);
+    };
+  }, [isPaused, isLevelUpPause, bossAnnouncement]);
+
   // React copies of variables for UI overlays
   const [uiStats, setUiStats] = useState<PlayerStats | null>(null);
   const [activeBoss, setActiveBoss] = useState<{

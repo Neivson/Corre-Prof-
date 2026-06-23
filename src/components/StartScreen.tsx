@@ -1119,6 +1119,21 @@ export default function StartScreen({
     }
   };
 
+  const tryFullscreen = () => {
+    try {
+      const docEl = document.documentElement;
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch(() => {});
+      } else if ((docEl as any).webkitRequestFullscreen) {
+        (docEl as any).webkitRequestFullscreen();
+      } else if ((docEl as any).mozRequestFullScreen) {
+        (docEl as any).mozRequestFullScreen();
+      } else if ((docEl as any).msRequestFullscreen) {
+        (docEl as any).msRequestFullscreen();
+      }
+    } catch (err) {}
+  };
+
   return (
     <div 
       id="main-menu-container" 
@@ -1200,7 +1215,6 @@ export default function StartScreen({
             "O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."
           </p>
           <div className="flex items-center justify-center gap-1.5 mt-0.5">
-            <span className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-bounce shrink-0" />
             <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[9px] sm:text-[10px]">
               EXPEDIENTE ATIVO 🎒
             </span>
@@ -1215,6 +1229,7 @@ export default function StartScreen({
             
             {/* Scenario Selector Panel */}
             <div className="bg-[#0f172b] p-2.5 sm:p-3 flex flex-col items-center justify-center rounded-none relative">
+
               
               <div className="flex items-center justify-center gap-2 sm:gap-3 w-full mt-1">
                 {/* Left Arrow button styled with solid shadow */}
@@ -1301,6 +1316,7 @@ export default function StartScreen({
               <button
                 id="btn-start-game-inner"
                 onClick={() => {
+                  tryFullscreen();
                   audio.playLevelUp();
                   onStartGame(activeScenario);
                 }}
@@ -1337,6 +1353,7 @@ export default function StartScreen({
           <button
             id="base-btn-play"
             onClick={() => {
+              tryFullscreen();
               audio.playLevelUp();
               onStartGame(activeScenario);
             }}
@@ -1354,7 +1371,7 @@ export default function StartScreen({
               audio.playCoin();
               setShowUpgradesModal(true);
             }}
-            className="py-2.5 sm:py-3 px-1 sm:px-2 bg-[#FDFCF0] text-black hover:bg-yellow-550 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 pointer-events-auto"
+            className="py-2.5 sm:py-3 px-1 sm:px-2 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 pointer-events-auto"
             title="Melhorias Permanentes"
           >
             <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
@@ -1474,7 +1491,7 @@ export default function StartScreen({
                   audio.playCoin();
                   setShowUpgradesModal(false);
                 }}
-                className="w-full py-2 bg-yellow-400 hover:bg-yellow-550 text-black font-black border-2 border-black uppercase text-xs shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer text-center"
+                className="w-full py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-black border-2 border-black uppercase text-xs shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer text-center"
               >
                 Fechar Melhorias
               </button>
@@ -1611,7 +1628,7 @@ export default function StartScreen({
                                   (enemy as any).characterId
                                 );
                               }}
-                              className="mt-1.5 px-2 py-1 bg-yellow-400 hover:bg-yellow-550 text-black border border-black font-black text-[7.5px] uppercase tracking-wider flex items-center gap-1 rounded-none shadow-[1.5px_1.5px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] cursor-pointer"
+                              className="mt-1.5 px-2 py-1 bg-yellow-400 hover:bg-yellow-500 text-black border border-black font-black text-[7.5px] uppercase tracking-wider flex items-center gap-1 rounded-none shadow-[1.5px_1.5px_0px_#000] active:translate-x-[0.5px] active:translate-y-[0.5px] cursor-pointer"
                               title="Baixar planilha de sprites (12 frames) em Alta Definição"
                             >
                               💾 Sprite HD
@@ -1650,7 +1667,7 @@ export default function StartScreen({
                   audio.playCoin();
                   setShowEnemiesModal(false);
                 }}
-                className="w-full py-2 bg-yellow-400 hover:bg-yellow-550 text-black font-black border-2 border-black uppercase text-xs shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer text-center"
+                className="w-full py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-black border-2 border-black uppercase text-xs shadow-[2px_2px_0px_#000] active:translate-x-[1px] active:translate-y-[1px] cursor-pointer text-center"
               >
                 Fechar Dossiê
               </button>

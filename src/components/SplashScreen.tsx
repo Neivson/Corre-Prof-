@@ -53,6 +53,21 @@ export default function SplashScreen({ onDismiss }: SplashScreenProps) {
 
   const handleTouchScreen = () => {
     if (isReady) {
+      // Request standard browser fullscreen to hide navigation and status bar
+      try {
+        const docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if ((docEl as any).webkitRequestFullscreen) {
+          (docEl as any).webkitRequestFullscreen();
+        } else if ((docEl as any).mozRequestFullScreen) {
+          (docEl as any).mozRequestFullScreen();
+        } else if ((docEl as any).msRequestFullscreen) {
+          (docEl as any).msRequestFullscreen();
+        }
+      } catch (err) {
+        console.warn('Fullscreen request failed:', err);
+      }
       triggerDismiss();
     }
   };

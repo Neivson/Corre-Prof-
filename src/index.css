@@ -60,6 +60,11 @@ html, body {
   -webkit-user-select: none;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
 canvas, img {
   image-rendering: pixelated;
   image-rendering: crisp-edges;
