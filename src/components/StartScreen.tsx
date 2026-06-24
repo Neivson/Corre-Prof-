@@ -1137,43 +1137,40 @@ export default function StartScreen({
   return (
     <div 
       id="main-menu-container" 
-      className="w-full h-full bg-slate-900 text-slate-100 flex flex-col justify-between p-2 pb-3 sm:p-3 select-none overflow-hidden bg-dark-grid animate-fade-in"
+      className="w-full h-full bg-slate-900 text-slate-100 flex flex-col justify-between items-center p-3 pb-4 sm:p-5 select-none overflow-hidden bg-dark-grid animate-fade-in relative gap-2 sm:gap-4"
     >
-      {/* Spacer to lower/descend top contents */}
-      <div className="h-0.5 sm:h-3 shrink-0" />
+      {/* Medalhas de Carreira - Floating Top-Left */}
+      <button
+        id="btn-career-medals"
+        onClick={() => {
+          audio.playCoin();
+          setShowAchievementsModal(true);
+        }}
+        className="absolute top-3 left-3 sm:top-5 sm:left-5 p-2 bg-yellow-400 text-black brutalist-border-thin rounded-none shadow-[3px_3px_0px_#000] hover:bg-yellow-500 transition pointer-events-auto flex items-center justify-center z-40 active:translate-y-[1px] active:shadow-none"
+        title="Medalhas de Carreira"
+      >
+        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
+      </button>
+
+      {/* Controle de Som - Floating Top-Right */}
+      <button 
+        id="sound-toggle"
+        onClick={() => {
+          onToggleSound();
+          audio.playCoin();
+        }}
+        className="absolute top-3 right-3 sm:top-5 sm:right-5 p-2 bg-yellow-400 text-black brutalist-border-thin rounded-none shadow-[3px_3px_0px_#000] hover:bg-yellow-500 transition pointer-events-auto flex items-center justify-center z-40 active:translate-y-[1px] active:shadow-none"
+        title={soundEnabled ? "Mutar Som" : "Ativar Som"}
+      >
+        {soundEnabled ? <Volume2 className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} /> : <VolumeX className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />}
+      </button>
 
       {/* Header and Title */}
-      <header className="w-full max-w-[calc(100%-8px)] sm:max-w-xl mx-auto text-center pt-3 sm:pt-9 pb-1 sm:pb-3.5 relative flex flex-col items-center shrink-0">
+      <header className="w-full max-w-sm sm:max-w-md mx-auto text-center pt-8 pb-1.5 relative flex flex-col items-center shrink-0">
         
-        {/* Medalhas de Carreira - Left-aligned */}
-        <button
-          id="btn-career-medals"
-          onClick={() => {
-            audio.playCoin();
-            setShowAchievementsModal(true);
-          }}
-          className="absolute top-1 left-1 p-1.5 sm:p-2 bg-yellow-400 text-black brutalist-border-thin rounded-none shadow-[2px_2px_0px_#000] hover:bg-yellow-500 transition pointer-events-auto flex items-center justify-center z-40 active:translate-y-[1px] active:shadow-none"
-          title="Medalhas de Carreira"
-        >
-          <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" strokeWidth={3} />
-        </button>
-
-        {/* Controle de Som - Right-aligned */}
-        <button 
-          id="sound-toggle"
-          onClick={() => {
-            onToggleSound();
-            audio.playCoin();
-          }}
-          className="absolute top-1 right-1 p-1.5 sm:p-2 bg-yellow-400 text-black brutalist-border-thin rounded-none shadow-[2px_2px_0px_#000] hover:bg-yellow-500 transition pointer-events-auto flex items-center justify-center z-40 active:translate-y-[1px] active:shadow-none"
-          title={soundEnabled ? "Mutar Som" : "Ativar Som"}
-        >
-          {soundEnabled ? <Volume2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" strokeWidth={3} /> : <VolumeX className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" strokeWidth={3} />}
-        </button>
-
         {/* 1. Sobreviva às Aulas Red Banner Box (Top Layer, centered over the yellow title box) */}
         <div className="z-30 -mb-1 relative -rotate-1 translate-y-1 sm:translate-y-1.5 skew-x-1">
-          <div className="bg-red-650 text-white font-sans font-black text-[11px] sm:text-[14.5px] md:text-[16px] px-3.5 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+          <div className="bg-red-650 text-white font-sans font-black text-[11px] sm:text-[14px] md:text-[15.5px] px-3.5 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
             SOBREVIVA ÀS AULAS
           </div>
         </div>
@@ -1181,7 +1178,7 @@ export default function StartScreen({
         {/* 2. Main Yellow Logo (Middle Layer) - Bigger, wider, closer to screen edges */}
         <h1 
           id="game-logo" 
-          className="uppercase bg-yellow-400 text-black border-3 border-black -rotate-1 shadow-[4px_4px_0px_#000] sm:shadow-[8px_8px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter w-[265px] h-[64px] text-[38px] leading-[22px] sm:w-[324.165px] sm:h-[80.9545px] sm:text-[53px] sm:leading-[29.5px]"
+          className="uppercase bg-yellow-400 text-black border-4 border-black -rotate-1 shadow-[5px_5px_0px_#000] sm:shadow-[9px_9px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter w-[295px] h-[72px] text-[42px] leading-[24px] sm:w-[350px] sm:h-[90px] sm:text-[56px] sm:leading-[32px]"
           style={{
             fontFamily: '"Pixelify Sans", sans-serif',
             fontWeight: 'bold',
@@ -1201,27 +1198,26 @@ export default function StartScreen({
         </div>
       </header>
 
-      {/* Main Container */}
-      <main className="w-full max-w-sm sm:max-w-md mx-auto bg-slate-950/75 brutalist-border rounded-none p-0 flex-1 my-0.5 sm:my-2 flex flex-col justify-start relative shadow-[4px_4px_0px_#000] min-h-0">
+      {/* Main Container - Compact and non-expanding */}
+      <main className="w-full max-w-sm sm:max-w-md mx-auto bg-slate-950/75 brutalist-border rounded-none p-0 flex-none flex flex-col justify-start relative shadow-[4px_4px_0px_#000] min-h-0">
         
         {/* Context Academic Year Text inserted snug against container with no margin-bottom */}
-        <div className="w-full p-2 sm:p-2.5 px-3 sm:px-4 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col gap-0.5 sm:gap-1 shrink-0">
-          <p className="leading-normal sm:leading-relaxed font-bold italic text-slate-300 font-sans text-[10px] sm:text-[12px]">
-            <span className="inline sm:hidden">"O ano letivo está a todo vapor! Prepare seus diários de classe para enfrentar o descontrole pedagógico."</span>
-            <span className="hidden sm:inline">"O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."</span>
+        <div className="w-full p-2 sm:p-2.5 px-3 sm:px-4 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col justify-center items-center shrink-0">
+          <p className="leading-snug sm:leading-relaxed font-bold italic text-slate-300 font-sans text-[10px] sm:text-[11.5px] max-w-[95%] mx-auto">
+            "O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."
           </p>
-          <div className="flex items-center justify-center gap-1.5 mt-0.5">
-            <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[8px] sm:text-[10px]">
+          <div className="flex items-center justify-center gap-1.5 mt-1 bg-slate-950/40 py-0.5 px-3 border border-slate-800/50 rounded-none w-fit">
+            <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[8.5px] sm:text-[10px] flex items-center gap-1">
               EXPEDIENTE ATIVO 🎒
             </span>
           </div>
         </div>
 
         {/* Tab Context Container snug with zero margins */}
-        <div className="flex-1 flex flex-col min-h-0 animate-fade-in w-full">
+        <div className="flex-none flex flex-col min-h-0 animate-fade-in w-full">
           
           {/* BEAUTIFUL RETRO OPERATIONAL TARGETING SELECTION CARD */}
-          <div className="bg-[#0f172a] p-2.5 sm:p-4 flex flex-col justify-between flex-1 min-h-0 w-full gap-2 sm:gap-3">
+          <div className="bg-[#0f172a] p-2.5 sm:p-4 flex flex-col justify-start min-h-0 w-full gap-2">
             
             {/* Scenario Selector Panel */}
             <div className="bg-[#0f172b] p-2 sm:p-3 flex flex-col items-center justify-center rounded-none relative">
@@ -1307,29 +1303,13 @@ export default function StartScreen({
 
             </div>
 
-            {/* Bottom Partiu Sala button inside card container */}
-            <div className="mt-0.5 sm:mt-1 shrink-0">
-              <button
-                id="btn-start-game-inner"
-                onClick={() => {
-                  tryFullscreen();
-                  audio.playLevelUp();
-                  onStartGame(activeScenario);
-                }}
-                className="w-full font-black py-2.5 sm:py-3.5 pr-3 pl-[12px] bg-emerald-400 hover:bg-emerald-500 text-black tracking-widest brutalist-border brutalist-shadow-btn transition flex items-center justify-center gap-2 pointer-events-auto text-xs sm:text-sm uppercase active:translate-y-[2px]"
-              >
-                <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-black" strokeWidth={3} />
-                <span>PARTIU SALA!</span>
-              </button>
-            </div>
-
           </div>
 
         </div>
       </main>
 
       {/* Base main menu and actions row */}
-      <footer className="w-full max-w-sm sm:max-w-md mx-auto shrink-0 mt-1 pb-1.5">
+      <footer className="w-full max-w-sm sm:max-w-md mx-auto shrink-0 pb-1">
         <div className="grid grid-cols-3 gap-1.5">
           {/* INIMIGOS */}
           <button
