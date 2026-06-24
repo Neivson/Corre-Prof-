@@ -1,4 +1,4 @@
-const CACHE_NAME = 'corre-prof-v6';
+const CACHE_NAME = 'corre-prof-v7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -59,8 +59,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-First for manifest.json and the service worker to ensure quick updates
-  if (event.request.url.includes('manifest.json') || event.request.url.includes('sw.js')) {
+  // Network-First for HTML navigation, manifest, and service worker to ensure quick updates and avoid stale asset mismatch (white screens)
+  const isHtmlOrConfig = 
+    event.request.mode === 'navigate' || 
+    url.pathname === '/' || 
+    url.pathname.endsWith('/index.html') ||
+    event.request.url.includes('manifest.json') || 
+    event.request.url.includes('sw.js');
+
+  if (isHtmlOrConfig) {
     event.respondWith(
       fetch(event.request)
         .then((networkResponse) => {
