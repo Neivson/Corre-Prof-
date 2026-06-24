@@ -842,7 +842,7 @@ function ScenarioPreview({ type, accentColor, floorColor, gridColor }: { type: S
         ref={canvasRef} 
         width={160} 
         height={96} 
-        className="block w-[190px] h-[114px] rounded-none select-none pointer-events-none transition"
+        className="block w-[150px] h-[90px] xs:w-[170px] xs:h-[102px] sm:w-[190px] sm:h-[114px] rounded-none select-none pointer-events-none transition"
       />
     </div>
   );
@@ -1140,10 +1140,10 @@ export default function StartScreen({
       className="w-full h-full bg-slate-900 text-slate-100 flex flex-col justify-between p-2 pb-3 sm:p-3 select-none overflow-y-auto sm:overflow-hidden bg-dark-grid animate-fade-in"
     >
       {/* Spacer to lower/descend top contents */}
-      <div className="h-1 sm:h-3 shrink-0" />
+      <div className="h-0.5 sm:h-3 shrink-0" />
 
       {/* Header and Title */}
-      <header className="w-full max-w-[calc(100%-8px)] sm:max-w-xl mx-auto text-center pt-6 sm:pt-9 pb-1.5 sm:pb-3.5 relative flex flex-col items-center shrink-0">
+      <header className="w-full max-w-[calc(100%-8px)] sm:max-w-xl mx-auto text-center pt-3 sm:pt-9 pb-1 sm:pb-3.5 relative flex flex-col items-center shrink-0">
         
         {/* Medalhas de Carreira - Left-aligned */}
         <button
@@ -1173,7 +1173,7 @@ export default function StartScreen({
 
         {/* 1. Sobreviva às Aulas Red Banner Box (Top Layer, centered over the yellow title box) */}
         <div className="z-30 -mb-1 relative -rotate-1 translate-y-1 sm:translate-y-1.5 skew-x-1">
-          <div className="bg-red-650 text-white font-sans font-black text-[12.5px] sm:text-[14.5px] md:text-[16px] px-4.5 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+          <div className="bg-red-650 text-white font-sans font-black text-[11px] sm:text-[14.5px] md:text-[16px] px-3.5 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
             SOBREVIVA ÀS AULAS
           </div>
         </div>
@@ -1181,13 +1181,9 @@ export default function StartScreen({
         {/* 2. Main Yellow Logo (Middle Layer) - Bigger, wider, closer to screen edges */}
         <h1 
           id="game-logo" 
-          className="uppercase bg-yellow-400 text-black border-3 border-black -rotate-1 shadow-[5px_5px_0px_#000] sm:shadow-[8px_8px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter"
+          className="uppercase bg-yellow-400 text-black border-3 border-black -rotate-1 shadow-[4px_4px_0px_#000] sm:shadow-[8px_8px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter w-[265px] h-[64px] text-[38px] leading-[22px] sm:w-[324.165px] sm:h-[80.9545px] sm:text-[53px] sm:leading-[29.5px]"
           style={{
-            width: '324.165px',
-            height: '80.9545px',
-            fontSize: '53px',
             fontFamily: '"Pixelify Sans", sans-serif',
-            lineHeight: '29.5px',
             fontWeight: 'bold',
             fontStyle: 'normal',
           }}
@@ -1196,10 +1192,9 @@ export default function StartScreen({
         </h1>
 
         {/* 3. Description Box tucked behind/below the yellow title card (Bottom Layer) */}
-        <div className="z-10 -mt-3 sm:-mt-5 w-[76%] sm:w-[82%] bg-[#081325] border-2 border-black pt-5 sm:pt-7 pb-2 px-1.5 sm:px-3 text-center shadow-[3px_3px_0px_#000] -rotate-[0.5deg]">
+        <div className="z-10 -mt-2 sm:-mt-5 w-[80%] sm:w-[82%] bg-[#081325] border-2 border-black pt-4 sm:pt-7 pb-1.5 sm:pb-2 px-1.5 sm:px-3 text-center shadow-[3px_3px_0px_#000] -rotate-[0.5deg]">
           <p 
-            className="text-slate-300 font-bold uppercase tracking-wider leading-relaxed"
-            style={{ fontSize: '10px' }}
+            className="text-slate-300 font-bold uppercase tracking-wider leading-relaxed text-[8.5px] sm:text-[10px]"
           >
             O DIÁRIO FECHANDO, A BUROCRACIA ATACANDO<br />E A <span className="text-red-500 font-black">CANETA VERMELHA</span> FRITANDO!
           </p>
@@ -1207,15 +1202,16 @@ export default function StartScreen({
       </header>
 
       {/* Main Container */}
-      <main className="w-full max-w-sm sm:max-w-md mx-auto bg-slate-950/75 brutalist-border rounded-none p-0 flex-1 my-1 sm:my-2 flex flex-col justify-start relative shadow-[4px_4px_0px_#000] min-h-0">
+      <main className="w-full max-w-sm sm:max-w-md mx-auto bg-slate-950/75 brutalist-border rounded-none p-0 flex-1 my-0.5 sm:my-2 flex flex-col justify-start relative shadow-[4px_4px_0px_#000] min-h-0">
         
         {/* Context Academic Year Text inserted snug against container with no margin-bottom */}
-        <div className="w-full p-2.5 px-4 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col gap-1 shrink-0">
-          <p className="leading-relaxed font-bold italic text-slate-300 font-sans text-[11px] sm:text-[12px]">
-            "O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."
+        <div className="w-full p-2 sm:p-2.5 px-3 sm:px-4 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col gap-0.5 sm:gap-1 shrink-0">
+          <p className="leading-normal sm:leading-relaxed font-bold italic text-slate-300 font-sans text-[10px] sm:text-[12px]">
+            <span className="inline sm:hidden">"O ano letivo está a todo vapor! Prepare seus diários de classe para enfrentar o descontrole pedagógico."</span>
+            <span className="hidden sm:inline">"O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."</span>
           </p>
           <div className="flex items-center justify-center gap-1.5 mt-0.5">
-            <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[9px] sm:text-[10px]">
+            <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[8px] sm:text-[10px]">
               EXPEDIENTE ATIVO 🎒
             </span>
           </div>
@@ -1225,13 +1221,13 @@ export default function StartScreen({
         <div className="flex-1 flex flex-col min-h-0 animate-fade-in w-full">
           
           {/* BEAUTIFUL RETRO OPERATIONAL TARGETING SELECTION CARD */}
-          <div className="bg-[#0f172a] p-3 sm:p-4 flex flex-col justify-between flex-1 min-h-0 w-full gap-3">
+          <div className="bg-[#0f172a] p-2.5 sm:p-4 flex flex-col justify-between flex-1 min-h-0 w-full gap-2 sm:gap-3">
             
             {/* Scenario Selector Panel */}
-            <div className="bg-[#0f172b] p-2.5 sm:p-3 flex flex-col items-center justify-center rounded-none relative">
+            <div className="bg-[#0f172b] p-2 sm:p-3 flex flex-col items-center justify-center rounded-none relative">
 
               
-              <div className="flex items-center justify-center gap-2 sm:gap-3 w-full mt-1">
+              <div className="flex items-center justify-center gap-1.5 sm:gap-3 w-full mt-0.5 sm:mt-1">
                 {/* Left Arrow button styled with solid shadow */}
                 <button 
                   onClick={() => {
@@ -1241,23 +1237,23 @@ export default function StartScreen({
                     });
                   }}
                   disabled={activeIdx === 0}
-                  className={`p-0.5 border-2 border-black text-black cursor-pointer shadow-[1px_1px_0px_#000] active:translate-y-px active:shadow-none rounded-none flex items-center justify-center transition-all ${
+                  className={`p-1.5 sm:p-2 border-2 border-black text-black cursor-pointer shadow-[1px_1px_0px_#000] active:translate-y-px active:shadow-none rounded-none flex items-center justify-center transition-all ${
                     activeIdx === 0
                       ? 'bg-slate-850 text-slate-600 border-slate-900 cursor-not-allowed opacity-20 shadow-none transform-none' 
                       : 'bg-yellow-400 hover:bg-yellow-500'
                   }`}
                   title="Cenário Anterior"
                 >
-                  <ChevronLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-black" strokeWidth={3} />
+                  <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
                 </button>
 
                 {/* Scenario preview frame with corner targets representing a game camera screen */}
                 <div className="relative group p-0.5 bg-black border-2 border-transparent hover:scale-[1.02] transition-all duration-150 shrink-0 shadow-[0_0_12px_rgba(0,0,0,0.6)]">
                   {/* Four Corner Target Brackets */}
-                  <div className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-yellow-400 z-10" />
-                  <div className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-yellow-400 z-10" />
-                  <div className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-yellow-400 z-10" />
-                  <div className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-yellow-400 z-10" />
+                  <div className="absolute top-0 left-0 w-2 h-2 sm:w-2.5 sm:h-2.5 border-t-2 border-l-2 border-yellow-400 z-10" />
+                  <div className="absolute top-0 right-0 w-2 h-2 sm:w-2.5 sm:h-2.5 border-t-2 border-r-2 border-yellow-400 z-10" />
+                  <div className="absolute bottom-0 left-0 w-2 h-2 sm:w-2.5 sm:h-2.5 border-b-2 border-l-2 border-yellow-400 z-10" />
+                  <div className="absolute bottom-0 right-0 w-2 h-2 sm:w-2.5 sm:h-2.5 border-b-2 border-r-2 border-yellow-400 z-10" />
                   
                   <ScenarioPreview 
                     type={activeScenario.type} 
@@ -1279,22 +1275,22 @@ export default function StartScreen({
                         });
                       }}
                       disabled={isRightDisabled}
-                      className={`p-0.5 border-2 border-black text-black cursor-pointer shadow-[1px_1px_0px_#000] active:translate-y-px active:shadow-none rounded-none flex items-center justify-center transition-all ${
+                      className={`p-1.5 sm:p-2 border-2 border-black text-black cursor-pointer shadow-[1px_1px_0px_#000] active:translate-y-px active:shadow-none rounded-none flex items-center justify-center transition-all ${
                         isRightDisabled 
                           ? 'bg-slate-850 text-slate-600 border-slate-900 cursor-not-allowed opacity-20 shadow-none transform-none' 
                           : 'bg-yellow-400 hover:bg-yellow-500'
                       }`}
                       title="Próximo Cenário"
                     >
-                      <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-black" strokeWidth={3} />
+                      <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
                     </button>
                   );
                 })()}
               </div>
               
               {/* Scenario parameters display panel */}
-              <div className="text-center mt-2 flex flex-col items-center w-full">
-                <h3 className="font-sans font-black text-sm sm:text-base text-white uppercase tracking-tight flex items-center gap-1.5">
+              <div className="text-center mt-1.5 sm:mt-2 flex flex-col items-center w-full">
+                <h3 className="font-sans font-black text-xs sm:text-sm md:text-base text-white uppercase tracking-tight flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full shadow-[0_0_8px_currentColor]" style={{ backgroundColor: activeScenario.accentColor, color: activeScenario.accentColor }} />
                   {activeScenario.name}
                 </h3>
@@ -1312,7 +1308,7 @@ export default function StartScreen({
             </div>
 
             {/* Bottom Partiu Sala button inside card container */}
-            <div className="mt-1 shrink-0">
+            <div className="mt-0.5 sm:mt-1 shrink-0">
               <button
                 id="btn-start-game-inner"
                 onClick={() => {
@@ -1320,7 +1316,7 @@ export default function StartScreen({
                   audio.playLevelUp();
                   onStartGame(activeScenario);
                 }}
-                className="w-full font-black py-2.5 sm:py-3.5 pr-3 pl-[12px] -mt-[10px] bg-emerald-400 hover:bg-emerald-500 text-black tracking-widest brutalist-border brutalist-shadow-btn transition flex items-center justify-center gap-2 pointer-events-auto text-xs sm:text-sm uppercase active:translate-y-[2px]"
+                className="w-full font-black py-2.5 sm:py-3.5 pr-3 pl-[12px] bg-emerald-400 hover:bg-emerald-500 text-black tracking-widest brutalist-border brutalist-shadow-btn transition flex items-center justify-center gap-2 pointer-events-auto text-xs sm:text-sm uppercase active:translate-y-[2px]"
               >
                 <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current text-black" strokeWidth={3} />
                 <span>PARTIU SALA!</span>
@@ -1342,7 +1338,7 @@ export default function StartScreen({
               audio.playCoin();
               setShowEnemiesModal(true);
             }}
-            className="py-2.5 sm:py-3 px-1 sm:px-2 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 pointer-events-auto"
+            className="py-3 sm:py-3.5 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Dossiê de Inimigos"
           >
             <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
@@ -1357,7 +1353,7 @@ export default function StartScreen({
               audio.playLevelUp();
               onStartGame(activeScenario);
             }}
-            className="py-2.5 sm:py-3 px-1 sm:px-2 bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 pointer-events-auto"
+            className="py-3 sm:py-3.5 px-1 bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Jogar Agora!"
           >
             <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current text-black" strokeWidth={3} />
@@ -1371,7 +1367,7 @@ export default function StartScreen({
               audio.playCoin();
               setShowUpgradesModal(true);
             }}
-            className="py-2.5 sm:py-3 px-1 sm:px-2 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[10px] sm:text-xs md:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 sm:gap-1.5 pointer-events-auto"
+            className="py-3 sm:py-3.5 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Melhorias Permanentes"
           >
             <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
