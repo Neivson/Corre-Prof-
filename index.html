@@ -17,27 +17,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-
-    <!-- Register Service Worker -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          // Dynamically detect correct subfolder path for GitHub Pages or root
-          const basePath = window.location.pathname.endsWith('/') 
-            ? window.location.pathname 
-            : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-
-          navigator.serviceWorker.register(basePath + 'sw.js', { scope: basePath })
-            .then((reg) => {
-              console.log('PWA Service Worker registered successfully with scope:', reg.scope);
-            })
-            .catch((err) => {
-              console.warn('PWA Service Worker registration failed:', err);
-            });
-        });
-      }
-    </script>
+    <script type="module" src="./src/main.tsx"></script>
   </body>
 </html>
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'corre-prof-v5';
+const CACHE_NAME = 'corre-prof-v6';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -45,6 +45,20 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Bypass service worker interception for Vite dev server assets
+  const url = new URL(event.request.url);
+  if (
+    url.pathname.includes('/@vite') ||
+    url.pathname.includes('/@id') ||
+    url.pathname.includes('/node_modules') ||
+    url.pathname.includes('/src/') ||
+    url.searchParams.has('import') ||
+    url.searchParams.has('t') ||
+    url.searchParams.has('v')
+  ) {
+    return;
+  }
+
   // Network-First for manifest.json and the service worker to ensure quick updates
   if (event.request.url.includes('manifest.json') || event.request.url.includes('sw.js')) {
     event.respondWith(
@@ -82,8 +96,10 @@ self.addEventListener('fetch', (event) => {
           cache.put(event.request, responseToCache);
         });
         return networkResponse;
-      }).catch(() => {
-        // Offline fallback
+      }).catch((err) => {
+        // Rethrow the error so that the browser handles network failures properly
+        // instead of receiving an undefined Response which causes a TypeError/Script error
+        throw err;
       });
     })
   );
