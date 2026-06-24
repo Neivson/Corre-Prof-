@@ -1166,19 +1166,19 @@ export default function StartScreen({
       </button>
 
       {/* Header and Title */}
-      <header className="w-full max-w-sm sm:max-w-md mx-auto text-center pt-8 pb-1.5 relative flex flex-col items-center shrink-0">
+      <header className="w-full max-w-sm sm:max-w-md mx-auto text-center pt-9 pb-2 relative flex flex-col items-center shrink-0">
         
         {/* 1. Sobreviva às Aulas Red Banner Box (Top Layer, centered over the yellow title box) */}
         <div className="z-30 -mb-1 relative -rotate-1 translate-y-1 sm:translate-y-1.5 skew-x-1">
-          <div className="bg-red-650 text-white font-sans font-black text-[11px] sm:text-[14px] md:text-[15.5px] px-3.5 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
+          <div className="bg-red-650 text-white font-sans font-black text-[12px] sm:text-[15px] md:text-[17px] px-4 py-0.5 border-2 border-black uppercase tracking-wider shadow-[2px_2px_0px_#000]">
             SOBREVIVA ÀS AULAS
           </div>
         </div>
 
-        {/* 2. Main Yellow Logo (Middle Layer) - Bigger, wider, closer to screen edges */}
+        {/* 2. Main Yellow Logo (Middle Layer) - Giant Arcade-style retro block for massive emphasis */}
         <h1 
           id="game-logo" 
-          className="uppercase bg-yellow-400 text-black border-4 border-black -rotate-1 shadow-[5px_5px_0px_#000] sm:shadow-[9px_9px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter w-[295px] h-[72px] text-[42px] leading-[24px] sm:w-[350px] sm:h-[90px] sm:text-[56px] sm:leading-[32px]"
+          className="uppercase bg-yellow-400 text-black border-4 border-black -rotate-1 shadow-[6px_6px_0px_#000] sm:shadow-[10px_10px_0px_#000] relative z-20 flex items-center justify-center tracking-tighter w-[310px] h-[80px] text-[46px] leading-[26px] sm:w-[410px] sm:h-[110px] sm:text-[64px] sm:leading-[36px]"
           style={{
             fontFamily: '"Pixelify Sans", sans-serif',
             fontWeight: 'bold',
@@ -1189,7 +1189,7 @@ export default function StartScreen({
         </h1>
 
         {/* 3. Description Box tucked behind/below the yellow title card (Bottom Layer) */}
-        <div className="z-10 -mt-2 sm:-mt-5 w-[80%] sm:w-[82%] bg-[#081325] border-2 border-black pt-4 sm:pt-7 pb-1.5 sm:pb-2 px-1.5 sm:px-3 text-center shadow-[3px_3px_0px_#000] -rotate-[0.5deg]">
+        <div className="z-10 -mt-2.5 sm:-mt-5 w-[82%] sm:w-[85%] bg-[#081325] border-2 border-black pt-4 sm:pt-7 pb-1.5 sm:pb-2 px-1.5 sm:px-3 text-center shadow-[3px_3px_0px_#000] -rotate-[0.5deg]">
           <p 
             className="text-slate-300 font-bold uppercase tracking-wider leading-relaxed text-[8.5px] sm:text-[10px]"
           >
@@ -1202,11 +1202,11 @@ export default function StartScreen({
       <main className="w-full max-w-sm sm:max-w-md mx-auto bg-slate-950/75 brutalist-border rounded-none p-0 flex-none flex flex-col justify-start relative shadow-[4px_4px_0px_#000] min-h-0">
         
         {/* Context Academic Year Text inserted snug against container with no margin-bottom */}
-        <div className="w-full p-2 sm:p-2.5 px-3 sm:px-4 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col justify-center items-center shrink-0">
-          <p className="leading-snug sm:leading-relaxed font-bold italic text-slate-300 font-sans text-[10px] sm:text-[11.5px] max-w-[95%] mx-auto">
+        <div className="w-full p-2.5 sm:p-3 px-3.5 sm:px-5 bg-slate-900 border-b-2 border-black text-center text-slate-200 flex flex-col justify-center items-center shrink-0">
+          <p className="leading-normal sm:leading-relaxed font-bold italic text-slate-300 font-sans text-[10.5px] sm:text-[12.5px] max-w-[95%] mx-auto">
             "O ano letivo está a todo vapor! Prepare seus diários de classe, encha sua xícara de café puro e limpe suas canetas vermelhas para enfrentar o descontrole pedagógico."
           </p>
-          <div className="flex items-center justify-center gap-1.5 mt-1 bg-slate-950/40 py-0.5 px-3 border border-slate-800/50 rounded-none w-fit">
+          <div className="flex items-center justify-center gap-1.5 mt-2 bg-slate-950/40 py-0.5 px-3 border border-slate-800/50 rounded-none w-fit">
             <span className="text-yellow-400 font-mono font-black uppercase tracking-wider text-[8.5px] sm:text-[10px] flex items-center gap-1">
               EXPEDIENTE ATIVO 🎒
             </span>
