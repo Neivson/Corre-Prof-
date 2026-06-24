@@ -1137,7 +1137,7 @@ export default function StartScreen({
   return (
     <div 
       id="main-menu-container" 
-      className="w-full h-full bg-slate-900 text-slate-100 flex flex-col justify-between p-2 pb-3 sm:p-3 select-none overflow-y-auto sm:overflow-hidden bg-dark-grid animate-fade-in"
+      className="w-full h-full bg-slate-900 text-slate-100 flex flex-col justify-between p-2 pb-3 sm:p-3 select-none overflow-hidden bg-dark-grid animate-fade-in"
     >
       {/* Spacer to lower/descend top contents */}
       <div className="h-0.5 sm:h-3 shrink-0" />
@@ -1338,10 +1338,10 @@ export default function StartScreen({
               audio.playCoin();
               setShowEnemiesModal(true);
             }}
-            className="py-3 sm:py-3.5 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
+            className="py-3.5 sm:py-4 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[3px_3px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[13px] sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Dossiê de Inimigos"
           >
-            <User className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
+            <User className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-black" strokeWidth={3} />
             <span>Inimigos</span>
           </button>
 
@@ -1353,10 +1353,10 @@ export default function StartScreen({
               audio.playLevelUp();
               onStartGame(activeScenario);
             }}
-            className="py-3 sm:py-3.5 px-1 bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
+            className="py-3.5 sm:py-4 px-1 bg-yellow-400 hover:bg-yellow-500 text-black border-2 border-black rounded-none shadow-[3px_3px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[13px] sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Jogar Agora!"
           >
-            <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-current text-black" strokeWidth={3} />
+            <Play className="w-[18px] h-[18px] sm:w-5 sm:h-5 fill-current text-black" strokeWidth={3} />
             <span>Jogar</span>
           </button>
 
@@ -1367,10 +1367,10 @@ export default function StartScreen({
               audio.playCoin();
               setShowUpgradesModal(true);
             }}
-            className="py-3 sm:py-3.5 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-xs sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
+            className="py-3.5 sm:py-4 px-1 bg-[#FDFCF0] text-black hover:bg-yellow-50 border-2 border-black rounded-none shadow-[3px_3px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] transition text-[13px] sm:text-sm font-black uppercase tracking-wider flex items-center justify-center gap-1 xs:gap-1.5 pointer-events-auto"
             title="Melhorias Permanentes"
           >
-            <Dumbbell className="w-4 h-4 sm:w-5 sm:h-5 text-black" strokeWidth={3} />
+            <Dumbbell className="w-[18px] h-[18px] sm:w-5 sm:h-5 text-black" strokeWidth={3} />
             <span>Melhorias</span>
           </button>
         </div>
