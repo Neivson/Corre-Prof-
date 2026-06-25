@@ -1,0 +1,23 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "web",
+      "site": "https://neivson.github.io"
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.neivson.correprof",
+      "sha256_cert_fingerprints": [
+        "96:47:03:7B:21:52:CA:38:FA:E0:5F:10:92:AE:2D:AB:63:84:52:D1:FE:68:AB:CE:87:D7:88:3B:34:D1:26:85"
+      ]
+    }
+  }
+]

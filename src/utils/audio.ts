@@ -14,11 +14,17 @@ class SoundEffectsManager {
   }
 
   private initContext() {
-    if (!this.ctx) {
-      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
-    }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+    try {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      }
+      if (this.ctx && this.ctx.state === 'suspended') {
+        this.ctx.resume().catch((err) => {
+          // Ignore autoplay restriction errors quietly
+        });
+      }
+    } catch (e) {
+      // Quietly handle situations where AudioContext is blocked or unsupported initially
     }
   }
 
