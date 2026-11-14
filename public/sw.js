@@ -1,4 +1,4 @@
-const CACHE_NAME = 'corre-prof-v7';
+const CACHE_NAME = 'corre-prof-v1-0-a';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

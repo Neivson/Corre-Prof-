@@ -1,3 +1,4 @@
+import { separateNearbyEnemies } from '../utils/enemySeparation';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -2125,48 +2126,77 @@ export default function ActiveGame({
     };
   }, []);
 
-  // Update loop ticking with decoupled physics fixed-tick (60Hz) and visual rendering (60 FPS) for perfect, lag-free gameplay on PC/mobile
+  // Fixed-step physics with a bounded catch-up budget. Excess accumulated work is
+  // discarded rather than executing a burst of expensive updates on one frame.
+  // Enable lightweight frame diagnostics with ?perf=1 (browser developer console).
   useEffect(() => {
     let animationFrameId: number;
-    let lastRenderTime = performance.now();
-    let lastUpdateTime = performance.now();
-    const fpsLimit = 60; // Render at butter-smooth 60 FPS
-    const renderInterval = 1000 / fpsLimit; // ~16.67ms
-    const physicsInterval = 1000 / 60; // Fixed 60Hz simulation steps for responsive gameplay
-    
+    let previousTime = performance.now();
+    let physicsAccumulator = 0;
+    let lastRenderTime = previousTime;
+    const physicsInterval = 1000 / 60;
+    const renderInterval = 1000 / 60;
+    const maxPhysicsSteps = 2;
+    const perfEnabled = new URLSearchParams(window.location.search).get('perf') === '1';
+    let sampledFrames = 0;
+    let longFrames = 0;
+    let worstFrameMs = 0;
+    let droppedPhysicsSteps = 0;
+    let lastPerfReport = previousTime;
+
     const tick = (now: number) => {
       animationFrameId = requestAnimationFrame(tick);
+      const frameDelta = Math.max(0, now - previousTime);
+      previousTime = now;
 
       if (isPaused || isLevelUpPause || !!bossAnnouncement) {
+        physicsAccumulator = 0;
         lastRenderTime = now;
-        lastUpdateTime = now;
+        lastPerfReport = now;
+        sampledFrames = longFrames = worstFrameMs = droppedPhysicsSteps = 0;
         return;
       }
-      
-      // 1. Run physics simulation steps at fixed 60Hz rate
-      let elapsedUpdate = now - lastUpdateTime;
-      // Cap catastrophic lag spikes (e.g. background tab freezing)
-      if (elapsedUpdate > 250) {
-        elapsedUpdate = physicsInterval;
-        lastUpdateTime = now - physicsInterval;
+
+      if (perfEnabled) {
+        sampledFrames++;
+        if (frameDelta > 34) longFrames++;
+        worstFrameMs = Math.max(worstFrameMs, frameDelta);
       }
-      
+
+      // A resumed tab or heavily loaded frame must not trigger an update spiral.
+      physicsAccumulator += Math.min(frameDelta, 100);
       let updateCount = 0;
-      while (elapsedUpdate >= physicsInterval && updateCount < 5) {
+      while (physicsAccumulator >= physicsInterval && updateCount < maxPhysicsSteps) {
         updateGame();
-        lastUpdateTime += physicsInterval;
-        elapsedUpdate = now - lastUpdateTime;
+        physicsAccumulator -= physicsInterval;
         updateCount++;
       }
-      
-      // 2. Render visual scene at smooth 60 FPS
+      if (physicsAccumulator >= physicsInterval) {
+        if (perfEnabled) droppedPhysicsSteps += Math.floor(physicsAccumulator / physicsInterval);
+        physicsAccumulator %= physicsInterval;
+      }
+
       const elapsedRender = now - lastRenderTime;
       if (elapsedRender >= renderInterval) {
         renderGame();
         lastRenderTime = now - (elapsedRender % renderInterval);
       }
+
+      if (perfEnabled && now - lastPerfReport >= 10000) {
+        console.info('[Corre, Prof! desempenho]', {
+          quadros: sampledFrames,
+          quadrosAcimaDe34ms: longFrames,
+          piorIntervaloMs: Math.round(worstFrameMs),
+          passosDeFisicaDescartados: droppedPhysicsSteps,
+          inimigos: gameRef.current.enemies.length,
+          projeteis: gameRef.current.projectiles.length,
+          itens: gameRef.current.powerUps.length,
+        });
+        lastPerfReport = now;
+        sampledFrames = longFrames = worstFrameMs = droppedPhysicsSteps = 0;
+      }
     };
-    
+
     animationFrameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrameId);
   }, [isPaused, isLevelUpPause, bossAnnouncement]);
@@ -4193,31 +4223,6 @@ export default function ActiveGame({
       }
     });
 
-    // 4.5. Student-Student Separation Collision Resolution (prevents enemies from stacking into a single point)
-    for (let i = 0; i < g.enemies.length; i++) {
-      const e1 = g.enemies[i];
-      if (e1.hp <= 0) continue;
-      for (let j = i + 1; j < g.enemies.length; j++) {
-        const e2 = g.enemies[j];
-        if (e2.hp <= 0) continue;
-
-        const dx = e2.x - e1.x;
-        const dy = e2.y - e1.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const minDist = (e1.size + e2.size) * 0.85; // Allow slight organic overlapping
-        if (dist < minDist) {
-          const overlap = minDist - dist;
-          const pushX = (dx / (dist || 1)) * overlap * 0.45;
-          const pushY = (dy / (dist || 1)) * overlap * 0.45;
-
-          e1.x -= pushX;
-          e1.y -= pushY;
-          e2.x += pushX;
-          e2.y += pushY;
-        }
-      }
-    }
-
     // 5. Standalone High-Performance Projectile-Enemy Collision Check (O(P * E_local) with early exits and active checks)
     g.projectiles.forEach((p) => {
       if (p.life <= 0) return; // Skip dead projectiles
@@ -4317,57 +4322,10 @@ export default function ActiveGame({
       });
     });
 
-    // Resolve enemy-enemy overlapping collisions to prevent them from stacking (optimized with bounding box check, visible close radius, and alternating ticks to save mobile CPU cycles)
+    // One nearby-enemy separation pass, indexed by spatial cells instead of all pairs.
+    // Preserve the original every-other-tick cadence and 220px local radius.
     if (g.totalTicks % 2 === 0) {
-      const activeCloseEnemies = g.enemies.filter(e => {
-        return Math.abs(e.x - g.playerX) < 220 && Math.abs(e.y - g.playerY) < 220;
-      });
-
-      for (let i = 0; i < activeCloseEnemies.length; i++) {
-        const e1 = activeCloseEnemies[i];
-
-        for (let j = i + 1; j < activeCloseEnemies.length; j++) {
-          const e2 = activeCloseEnemies[j];
-          
-          const dx = e2.x - e1.x;
-          const dy = e2.y - e1.y;
-          
-          // Fast bounding box check to bypass costly square root calculations for far elements
-          const minDist = (e1.size + e2.size) * 0.92; // 8% visual overlap is organic
-          if (Math.abs(dx) >= minDist || Math.abs(dy) >= minDist) {
-            continue;
-          }
-          
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < minDist) {
-            const overlap = minDist - dist;
-            let pushX = 0;
-            let pushY = 0;
-            
-            if (dist === 0) {
-              const randAngle = Math.random() * Math.PI * 2;
-              pushX = Math.cos(randAngle) * overlap;
-              pushY = Math.sin(randAngle) * overlap;
-            } else {
-              pushX = (dx / dist) * overlap;
-              pushY = (dy / dist) * overlap;
-            }
-            
-            if (e1.isBoss && !e2.isBoss) {
-              e2.x += pushX;
-              e2.y += pushY;
-            } else if (e2.isBoss && !e1.isBoss) {
-              e1.x -= pushX;
-              e1.y -= pushY;
-            } else {
-              e1.x -= pushX * 0.5;
-              e1.y -= pushY * 0.5;
-              e2.x += pushX * 0.5;
-              e2.y += pushY * 0.5;
-            }
-          }
-        }
-      }
+      separateNearbyEnemies(g.enemies, g.playerX, g.playerY);
     }
 
     // Handle dead enemies, dropping XP gems & coins

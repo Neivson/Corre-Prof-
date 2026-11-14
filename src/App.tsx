@@ -31,6 +31,7 @@ import SplashScreen from './components/SplashScreen';
 import { SatiricalResultsParticles } from './components/SatiricalResultsParticles';
 import { Scenario, PermanentShopUpgrades, Achievement, CharacterId, ScenarioType } from './types';
 import { audio } from './utils/audio';
+import { readProgress, writeProgress, clearProgress } from './utils/progress';
 
 const INITIAL_UPGRADES: PermanentShopUpgrades = {
   maxHpLevel: 0,
@@ -168,23 +169,14 @@ export default function App() {
     }
 
     try {
-      const storedGold = localStorage.getItem('correprof_gold_v2');
-      if (storedGold) setGold(parseInt(storedGold, 10));
-
-      const storedUpgrades = localStorage.getItem('correprof_upgrades_v2');
-      if (storedUpgrades) {
-        setUpgrades(JSON.parse(storedUpgrades));
-      }
-
-      const storedAchievements = localStorage.getItem('correprof_achievements_v3');
-      if (storedAchievements) {
-        setAchievements(JSON.parse(storedAchievements));
-      }
-
-      const storedCompleted = localStorage.getItem('correprof_completed_scenarios_v2');
-      if (storedCompleted) {
-        setCompletedScenarios(JSON.parse(storedCompleted));
-      }
+      const progress = readProgress(localStorage, {
+        version: 1, gold: 0, upgrades: INITIAL_UPGRADES,
+        achievements: INITIAL_ACHIEVEMENTS, completedScenarios: [],
+      });
+      setGold(progress.gold);
+      setUpgrades(progress.upgrades);
+      setAchievements(progress.achievements);
+      setCompletedScenarios(progress.completedScenarios);
 
       const storedSound = localStorage.getItem('correprof_sound_enabled');
       if (storedSound !== null) {
@@ -232,19 +224,26 @@ export default function App() {
     };
   }, [screen]);
 
-  // Sync state changes to storage
-  const saveProgress = (newGold: number, newUpgrades: PermanentShopUpgrades, newAchievements: Achievement[]) => {
+  // One durable record for rewards, upgrades, achievements and completed scenarios.
+  // The previous multi-key format is imported automatically on first launch.
+  const saveProgress = (
+    newGold: number,
+    newUpgrades: PermanentShopUpgrades,
+    newAchievements: Achievement[],
+    newCompletedScenarios: ScenarioType[] = completedScenarios,
+  ) => {
+    try {
+      writeProgress(localStorage, {
+        version: 1, gold: newGold, upgrades: newUpgrades,
+        achievements: newAchievements, completedScenarios: newCompletedScenarios,
+      });
+    } catch (e) {
+      console.error('Não foi possível salvar o progresso.', e);
+    }
     setGold(newGold);
     setUpgrades(newUpgrades);
     setAchievements(newAchievements);
-    
-    try {
-      localStorage.setItem('correprof_gold_v2', newGold.toString());
-      localStorage.setItem('correprof_upgrades_v2', JSON.stringify(newUpgrades));
-      localStorage.setItem('correprof_achievements_v3', JSON.stringify(newAchievements));
-    } catch (e) {
-      console.error(e);
-    }
+    setCompletedScenarios(newCompletedScenarios);
   };
 
   const handleStartGame = (scenario: Scenario) => {
@@ -254,11 +253,10 @@ export default function App() {
 
   const handleUpgradeBuy = (type: keyof PermanentShopUpgrades) => {
     const currentLvl = upgrades[type];
-    const cost = 100 * Math.pow(2.5, currentLvl); // matched or custom arrays costs
     const UPGRADE_COSTS = [100, 250, 600, 1500, 4000];
-    const realCost = UPGRADE_COSTS[currentLvl] || 99999;
+    const realCost = UPGRADE_COSTS[currentLvl];
 
-    if (gold >= realCost) {
+    if (realCost !== undefined && gold >= realCost) {
       const nextUpgrades = {
         ...upgrades,
         [type]: currentLvl + 1
@@ -266,8 +264,8 @@ export default function App() {
       const remainder = gold - realCost;
       
       // Re-evaluate 'Acordo do Giz' achievement checklist (Check accrued coins spent also)
-      const nextAchievements = checkAchievements(remainder, nextUpgrades, achievements);
-      saveProgress(remainder, nextUpgrades, nextAchievements);
+      const achievementResult = checkAchievements(remainder, nextUpgrades, achievements);
+      saveProgress(remainder + achievementResult.rewardCoins, nextUpgrades, achievementResult.achievements);
     }
   };
 
@@ -279,10 +277,8 @@ export default function App() {
   };
 
   const handleResetProgress = () => {
-    localStorage.removeItem('correprof_gold_v2');
-    localStorage.removeItem('correprof_upgrades_v2');
-    localStorage.removeItem('correprof_achievements_v3');
-    localStorage.removeItem('correprof_completed_scenarios_v2');
+    try { clearProgress(localStorage); }
+    catch (e) { console.error('Falha ao apagar o progresso.', e); }
     setGold(0);
     setUpgrades(INITIAL_UPGRADES);
     setAchievements(INITIAL_ACHIEVEMENTS);
@@ -301,7 +297,7 @@ export default function App() {
     finalLevel: number = 1,
     scenarioType?: ScenarioType,
     finalHpPercent: number = 100
-  ): Achievement[] => {
+  ): { achievements: Achievement[]; rewardCoins: number } => {
     
     // Sum spent money as assets
     const UPGRADE_COSTS = [100, 250, 600, 1500, 4000];
@@ -384,18 +380,9 @@ export default function App() {
       };
     });
 
-    if (rewardAccumulator > 0) {
-      // Apply reward cash
-      setTimeout(() => {
-        setGold(prev => {
-          const added = prev + rewardAccumulator;
-          localStorage.setItem('correprof_gold_v2', added.toString());
-          return added;
-        });
-      }, 500);
-    }
-
-    return updated;
+    // Rewards are credited in the same synchronous progress save as the unlock.
+    // Delayed callbacks could overwrite newer saves or resurrect gold after reset.
+    return { achievements: updated, rewardCoins: rewardAccumulator };
   };
 
   const handleGameFinished = (gameResults: {
@@ -412,7 +399,7 @@ export default function App() {
 
     // Persist gained rewards directly
     const remainder = gold + gameResults.goldGained;
-    const nextAchievements = checkAchievements(
+    const achievementResult = checkAchievements(
       remainder, 
       upgrades, 
       achievements, 
@@ -424,18 +411,10 @@ export default function App() {
       gameResults.finalHpPercent
     );
 
-    if (gameResults.victory) {
-      setCompletedScenarios(prev => {
-        if (!prev.includes(gameResults.scenarioType)) {
-          const next = [...prev, gameResults.scenarioType];
-          localStorage.setItem('correprof_completed_scenarios_v2', JSON.stringify(next));
-          return next;
-        }
-        return prev;
-      });
-    }
-
-    saveProgress(remainder, upgrades, nextAchievements);
+    const nextCompleted = gameResults.victory && !completedScenarios.includes(gameResults.scenarioType)
+      ? [...completedScenarios, gameResults.scenarioType]
+      : completedScenarios;
+    saveProgress(remainder + achievementResult.rewardCoins, upgrades, achievementResult.achievements, nextCompleted);
   };
 
   return (
