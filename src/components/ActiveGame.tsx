@@ -2143,6 +2143,36 @@ export default function ActiveGame({
     let worstFrameMs = 0;
     let droppedPhysicsSteps = 0;
     let lastPerfReport = previousTime;
+    let physicsMaxMs = 0;
+    let renderMaxMs = 0;
+    let physicsTotalMs = 0;
+    let renderTotalMs = 0;
+    let physicsSamples = 0;
+    let renderSamples = 0;
+    let browserLongTasks = 0;
+    let browserLongestTaskMs = 0;
+    let visibilityChanges = 0;
+    let previousFrameWorkMs = 0;
+    let lastBrowserLongTaskMs = 0;
+    let longTaskObserver: PerformanceObserver | undefined;
+
+    if (perfEnabled && typeof PerformanceObserver !== 'undefined') {
+      try {
+        longTaskObserver = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            browserLongTasks++;
+            browserLongestTaskMs = Math.max(browserLongestTaskMs, entry.duration);
+            lastBrowserLongTaskMs = entry.duration;
+          }
+        });
+        longTaskObserver.observe({ entryTypes: ['longtask'] });
+      } catch {
+        longTaskObserver = undefined; // Not supported in all browsers.
+      }
+    }
+
+    const onVisibilityChange = () => { if (perfEnabled) visibilityChanges++; };
+    if (perfEnabled) document.addEventListener('visibilitychange', onVisibilityChange);
 
     const tick = (now: number) => {
       animationFrameId = requestAnimationFrame(tick);
@@ -2161,13 +2191,35 @@ export default function ActiveGame({
         sampledFrames++;
         if (frameDelta > 34) longFrames++;
         worstFrameMs = Math.max(worstFrameMs, frameDelta);
+        if (frameDelta > 100) {
+          console.warn('[Corre, Prof! PICO DE LENTIDÃO]', {
+            intervaloMs: Math.round(frameDelta),
+            trabalhoDoQuadroAnteriorMs: Math.round(previousFrameWorkMs * 10) / 10,
+            ultimaTarefaLongaDoNavegadorMs: Math.round(lastBrowserLongTaskMs),
+            paginaVisivel: document.visibilityState === 'visible',
+            inimigos: gameRef.current.enemies.length,
+            projeteis: gameRef.current.projectiles.length,
+            itens: gameRef.current.powerUps.length,
+          });
+        }
       }
+
+      const frameWorkStart = perfEnabled ? performance.now() : 0;
 
       // A resumed tab or heavily loaded frame must not trigger an update spiral.
       physicsAccumulator += Math.min(frameDelta, 100);
       let updateCount = 0;
       while (physicsAccumulator >= physicsInterval && updateCount < maxPhysicsSteps) {
-        updateGame();
+        if (perfEnabled) {
+          const start = performance.now();
+          updateGame();
+          const elapsed = performance.now() - start;
+          physicsTotalMs += elapsed;
+          physicsMaxMs = Math.max(physicsMaxMs, elapsed);
+          physicsSamples++;
+        } else {
+          updateGame();
+        }
         physicsAccumulator -= physicsInterval;
         updateCount++;
       }
@@ -2178,9 +2230,19 @@ export default function ActiveGame({
 
       const elapsedRender = now - lastRenderTime;
       if (elapsedRender >= renderInterval) {
-        renderGame();
+        if (perfEnabled) {
+          const start = performance.now();
+          renderGame();
+          const elapsed = performance.now() - start;
+          renderTotalMs += elapsed;
+          renderMaxMs = Math.max(renderMaxMs, elapsed);
+          renderSamples++;
+        } else {
+          renderGame();
+        }
         lastRenderTime = now - (elapsedRender % renderInterval);
       }
+      if (perfEnabled) previousFrameWorkMs = performance.now() - frameWorkStart;
 
       if (perfEnabled && now - lastPerfReport >= 10000) {
         console.info('[Corre, Prof! desempenho]', {
@@ -2191,14 +2253,27 @@ export default function ActiveGame({
           inimigos: gameRef.current.enemies.length,
           projeteis: gameRef.current.projectiles.length,
           itens: gameRef.current.powerUps.length,
+          fisicaMediaMs: physicsSamples ? Math.round(physicsTotalMs / physicsSamples * 10) / 10 : 0,
+          fisicaMaxMs: Math.round(physicsMaxMs * 10) / 10,
+          desenhoMedioMs: renderSamples ? Math.round(renderTotalMs / renderSamples * 10) / 10 : 0,
+          desenhoMaxMs: Math.round(renderMaxMs * 10) / 10,
+          tarefasLongasNavegador: browserLongTasks,
+          maiorTarefaNavegadorMs: Math.round(browserLongestTaskMs),
+          mudancasVisibilidade: visibilityChanges,
         });
         lastPerfReport = now;
         sampledFrames = longFrames = worstFrameMs = droppedPhysicsSteps = 0;
+        physicsMaxMs = renderMaxMs = physicsTotalMs = renderTotalMs = 0;
+        physicsSamples = renderSamples = browserLongTasks = browserLongestTaskMs = visibilityChanges = 0;
       }
     };
 
     animationFrameId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      longTaskObserver?.disconnect();
+      if (perfEnabled) document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
   }, [isPaused, isLevelUpPause, bossAnnouncement]);
 
   // Periodic clock timer for survival count (restored to 100% standard speed)
